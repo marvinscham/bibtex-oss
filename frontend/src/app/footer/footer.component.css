@@ -1,0 +1,16 @@
+mat-toolbar {
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+#github {
+  position: relative;
+  top: 3px;
+}
+
+mat-divider {
+  height: 50%;
+}/*# sourceMappingURL=footer.component.css.map */

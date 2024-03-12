@@ -1,0 +1,57 @@
+<div class="content">
+  <mat-form-field appearance="fill">
+    <mat-label>Type</mat-label>
+    <mat-select #typeSelect [value]="selectedOption">
+      <mat-option value="auto">Auto-detect</mat-option>
+      <mat-option value="url">URL</mat-option>
+      <mat-option value="isbn">ISBN</mat-option>
+      <mat-option value="doi">DOI</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Enter a DOI, URL or ISBN...</mat-label>
+    <input
+      #mainInput
+      type="text"
+      matInput
+      (keyup.enter)="handleInput(typeSelect.value, mainInput.value)"
+    />
+  </mat-form-field>
+
+  <mat-form-field>
+    <div class="textarea-container">
+      <textarea
+        rows="16"
+        class="output-area mono"
+        spellcheck="false"
+        matInput
+        id="bibtex-output"
+        #bibtexOutput
+        [(ngModel)]="output"
+      ></textarea>
+
+      <button
+        color="primary"
+        class="copy-button plausible-event-name=Copy"
+        mat-fab
+        (click)="copyTextToClipboard(bibtexOutput.value)"
+        aria-label="Copy to clipboard"
+        matTooltip="Copy to clipboard"
+      >
+        <mat-icon>content_copy</mat-icon>
+      </button>
+
+      <button
+        color="accent"
+        class="tidy-button plausible-event-name=Copy"
+        mat-fab
+        (click)="tidyOutput(bibtexOutput.value)"
+        aria-label="Tidy up"
+        matTooltip="Tidy up"
+      >
+        <mat-icon>auto_fix_high</mat-icon>
+      </button>
+    </div>
+  </mat-form-field>
+</div>

@@ -1,0 +1,28 @@
+.spacer {
+  flex: 1 1 auto;
+}
+
+img#github {
+  position: relative;
+  top: 6px;
+}
+
+div.menu-right {
+  display: flex;
+  gap: 10px;
+}
+
+#home-button {
+  position: relative;
+
+  img {
+    position: absolute;
+    left: 0;
+    top: 2px;
+  }
+
+  span {
+    margin-left: 37px;
+    font-size: 1.3rem;
+  }
+}
