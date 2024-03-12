@@ -1,3 +1,7 @@
+# Local compose file
+docker-compose.yml
+compose.yml
+
 # Logs
 logs
 *.log

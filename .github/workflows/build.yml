@@ -55,7 +55,7 @@ jobs:
       - name: Install dependencies
         run: cd frontend && npm install -g @angular/cli && npm install
       - name: Build app
-        run: cd frontend && npm run build:ci
+        run: cd frontend && npm run build
 
   check:
     name: Check
