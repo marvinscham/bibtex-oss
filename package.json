@@ -1,0 +1,29 @@
+{
+  "name": "bibtex-oss-backend",
+  "version": "0.1.0",
+  "description": "A one-stop-shop for generating BibTeX references.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "bibtex",
+    "converter",
+    "doi",
+    "isbn",
+    "url"
+  ],
+  "author": "Marvin Scham",
+  "license": "GPL-3.0-only",
+  "dependencies": {
+    "axios": "^1.6.7",
+    "bibtex-tidy": "^1.11.0",
+    "cheerio": "^1.0.0-rc.12",
+    "express": "^4.18.3"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
