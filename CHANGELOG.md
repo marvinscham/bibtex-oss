@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.0 2024-03-13
+
+### Added
+
+- Privacy policy and legal notice
+
 ## v0.1.0 2024-03-13 Project Init
 
 ### Added
