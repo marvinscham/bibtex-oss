@@ -1,3 +1,5 @@
+.vscode
+
 # Local compose file
 docker-compose.yml
 compose.yml
