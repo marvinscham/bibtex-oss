@@ -1,3 +1,6 @@
+div.content {
+  height: calc(100vh - 128px);
+}
 div.content iframe {
-  padding-bottom: 64px;
+  border: none;
 }/*# sourceMappingURL=stats.component.css.map */
