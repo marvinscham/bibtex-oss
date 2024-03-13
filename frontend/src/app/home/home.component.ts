@@ -66,6 +66,8 @@ export class HomeComponent {
         break;
       }
     }
+
+    plausible('Lookup', { props: { type: type } });
   }
 
   isIsbn(input: string): boolean {
