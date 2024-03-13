@@ -1,0 +1,17 @@
+@use "@angular/material" as mat;
+
+@include mat.core();
+
+html,
+body {
+  height: 100%;
+  background-color: var(--mat-app-background-color);
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.mono {
+  font-family: Inconsolata, Monaco, "Lucida Console", monospace !important;
+}

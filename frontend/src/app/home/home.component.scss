@@ -1,0 +1,36 @@
+.content {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  mat-form-field {
+    width: 100%;
+    max-width: 800px;
+  }
+}
+
+.textarea-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 800px;
+}
+
+.output-area {
+  width: 100%;
+  font-size: 0.85em !important;
+}
+
+.copy-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.tidy-button {
+  position: absolute;
+  top: 66px;
+  right: 0;
+}

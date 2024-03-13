@@ -1,0 +1,6 @@
+div.content {
+  height: calc(100vh - 128px);
+}
+div.content iframe {
+  border: none;
+}/*# sourceMappingURL=tidy.component.css.map */
