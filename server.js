@@ -5,6 +5,7 @@ const tidy = require('bibtex-tidy');
 
 const app = express();
 app.use(express.text())
+app.disable("x-powered-by");
 
 function bibtexTidy(bibtex) {
     return tidy.tidy(bibtex, {
