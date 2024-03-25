@@ -23,13 +23,23 @@ jobs:
           echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_ENV
           echo "::set-output name=release_tag::$RELEASE_TAG"
 
-      - name: Build and push latest Docker image
+      - name: Build and push backend Docker image
         uses: docker/build-push-action@v5
         with:
+          context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ steps.version_data.outputs.release_tag }}
+            ghcr.io/${{ github.repository }}_backend:latest
+            ghcr.io/${{ github.repository }}_backend:${{ steps.version_data.outputs.release_tag }}
+
+      - name: Build and push frontend Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}_frontend:latest
+            ghcr.io/${{ github.repository }}_frontend:${{ steps.version_data.outputs.release_tag }}
 
   deploy:
     needs: publish
