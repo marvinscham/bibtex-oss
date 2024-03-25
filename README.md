@@ -12,7 +12,45 @@ A one-stop-shop to generate BibTeX from DOI, ISBN and URLs.
 
 # Setup
 
-## Local
+## Docker Compose
+
+If you intend to expose your instance to the internet, it's recommended to put it behind a reverse proxy with SSL support.
+
+### Pre-built image
+
+```yaml
+services:
+  backend:
+    container_name: bibtex-oss_backend
+    image: ghcr.io/marvinscham/bibtex-oss_backend:latest
+    environment:
+      NODE_ENV: production
+
+  frontend:
+    container_name: bibtex-oss_frontend
+    image: ghcr.io/marvinscham/bibtex-oss_frontend:latest
+    ports:
+      - 80:80
+```
+
+### Local build
+
+```yaml
+services:
+  backend:
+    container_name: bibtex-oss_backend
+    build: .
+    environment:
+      NODE_ENV: production
+
+  frontend:
+    container_name: bibtex-oss_frontend
+    build: frontend
+    ports:
+      - 80:80
+```
+
+## Dev/Local
 
 Install:
 
@@ -34,23 +72,4 @@ Run frontend:
 ```bash
 cd frontend
 ng serve --open
-```
-
-## Docker Compose
-
-Refer to the following example `compose.yml`:
-
-```yaml
-services:
-  backend:
-    container_name: bibtex-oss_backend
-    build: .
-    environment:
-      NODE_ENV: production
-
-  frontend:
-    container_name: bibtex-oss_frontend
-    build: frontend
-    ports:
-      - 80:80
 ```
