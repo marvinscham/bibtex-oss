@@ -1,6 +1,15 @@
 # Changelog
 
+## v0.2.2 2024-03-25
+
+### Dev
+
+- Added automatic image build & push to GitHub container repository
+- Added auto-deployment of public instance on update
+
 ## v0.2.1 2024-03-25
+
+### Dev
 
 - Dependency updates
 
