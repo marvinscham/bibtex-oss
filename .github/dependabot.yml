@@ -11,7 +11,7 @@ updates:
     groups:
       angular:
         patterns:
-          - '@angular/*'
+          - '@angular*'
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
