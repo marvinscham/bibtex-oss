@@ -1,6 +1,6 @@
 {
   "name": "bibtex-oss-frontend",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A one-stop-shop for generating BibTeX references.",
   "scripts": {
     "ng": "ng",
