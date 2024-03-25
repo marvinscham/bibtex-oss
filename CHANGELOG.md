@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.1 2024-03-25
+
+- Dependency updates
+
 ## v0.2.0 2024-03-13
 
 ### Added
