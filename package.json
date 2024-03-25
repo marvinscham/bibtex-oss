@@ -1,6 +1,6 @@
 {
   "name": "bibtex-oss-backend",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A one-stop-shop for generating BibTeX references.",
   "main": "index.js",
   "private": true,
