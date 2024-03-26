@@ -39,7 +39,7 @@ services:
 services:
   backend:
     container_name: bibtex-oss_backend
-    build: .
+    build: backend
     environment:
       NODE_ENV: production
 
@@ -55,8 +55,9 @@ services:
 Install:
 
 ```bash
+cd backend
 npm install
-cd frontend
+cd ../frontend
 npm install -g @angular/cli
 npm install
 ```
@@ -64,6 +65,7 @@ npm install
 Run backend:
 
 ```bash
+cd backend
 npm run start
 ```
 
