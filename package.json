@@ -21,7 +21,8 @@
     "axios": "^1.6.8",
     "bibtex-tidy": "^1.11.0",
     "cheerio": "^1.0.0-rc.12",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

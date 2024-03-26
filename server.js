@@ -1,5 +1,6 @@
 const express = require('express');
 const axios = require('axios');
+const xml2js = require('xml2js');
 const cheerio = require('cheerio');
 const tidy = require('bibtex-tidy');
 
@@ -135,6 +136,49 @@ app.get('/api/isbn/:isbn', async (req, res) => {
         res.send(bibtexTidy(bibtex)["bibtex"]);
     } catch (error) {
         console.error("Error fetching ISBN data:", error);
+        res.status(500).send(error.toString());
+    }
+});
+
+app.get('/api/arxiv/:arxivId', async (req, res) => {
+    const arxivId = req.params.arxivId;
+    const url = `http://export.arxiv.org/api/query?id_list=${arxivId}`;
+
+    try {
+        const response = await axios.get(url);
+        const parser = new xml2js.Parser();
+
+        parser.parseStringPromise(response.data).then(parsedData => {
+            const entry = parsedData.feed.entry[0];
+            if (!entry) {
+                throw new Error("arXiv ID not found");
+            }
+
+            const title = entry.title[0].trim();
+            const authors = entry.author.map(author => author.name[0]).join(" and ");
+            const year = entry.published[0].substring(0, 4);
+
+            const category = entry.category ? entry.category[0].$.term : 'unknown category';
+
+            const bibtex = `
+@article{${arxivId},
+    title = "${title}",
+    author = "${authors}",
+    year = "${year}",
+    journal = "arXiv:${arxivId}",
+    archivePrefix = "arXiv",
+    eprint = "${arxivId}",
+    primaryClass = "${category}",
+    url = "https://arxiv.org/abs/${arxivId}"
+}
+            `;
+
+            res.send(bibtexTidy(bibtex)["bibtex"]);
+        }).catch(err => {
+            throw err;
+        });
+    } catch (error) {
+        console.error("Error fetching arXiv data:", error);
         res.status(500).send(error.toString());
     }
 });
