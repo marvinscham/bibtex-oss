@@ -41,7 +41,8 @@ export class HomeComponent {
         input.startsWith('https://dx.doi.org/') ||
         input.startsWith('dx.doi.org/') ||
         input.startsWith('https://doi.org/') ||
-        input.startsWith('doi.org/')
+        input.startsWith('doi.org/') ||
+        input.startsWith('10.')
       ) {
         type = 'doi';
       } else if (input.startsWith('https://') || input.startsWith('http://')) {
@@ -84,6 +85,7 @@ export class HomeComponent {
 
     if (!isbn) {
       this.notify('Enter something first!', 'ok');
+      return;
     }
 
     this.apiService.getBibTexByIsbn(isbn).subscribe({
@@ -101,6 +103,7 @@ export class HomeComponent {
   loadBibtexFromDoi(doi: string) {
     if (!doi) {
       this.notify('Enter something first!', 'ok');
+      return;
     }
     doi = doi.replace('https://dx.doi.org/', '');
     doi = doi.replace('dx.doi.org/', '');
@@ -122,6 +125,7 @@ export class HomeComponent {
   loadBibtexFromUrl(uri: string) {
     if (!uri) {
       this.notify('Enter something first!', 'ok');
+      return;
     }
 
     this.apiService.getBibTexByUrl(uri).subscribe({
@@ -139,6 +143,7 @@ export class HomeComponent {
   tidyOutput(bibtex: string) {
     if (!bibtex) {
       this.notify('Enter something first!', 'ok');
+      return;
     }
 
     this.apiService.tidyBibtex(bibtex).subscribe({
@@ -154,16 +159,14 @@ export class HomeComponent {
     });
   }
 
-  copyTextToClipboard(text: string) {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        this.notify('Copied to clipboard!');
-      })
-      .catch((err) => {
-        this.notify("Couldn't copy to clipboard.");
-        console.error('Could not copy text: ', err);
-      });
+  async copyTextToClipboard(text: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(text);
+      this.notify('Copied to clipboard!');
+    } catch (err) {
+      this.notify("Couldn't copy to clipboard.");
+      console.error('Could not copy text: ', err);
+    }
   }
 
   notify(message: string, buttonText: string = 'Close') {

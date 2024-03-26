@@ -66,10 +66,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Install backend dependencies
         run: cd backend && npm install
       - name: Run backend tests
         run: cd backend && npm test
+
+      - name: Install frontend dependencies
+        run: cd frontend && npm install
+      - name: Run frontend tests
+        run: cd frontend && npm test
+
       - uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
