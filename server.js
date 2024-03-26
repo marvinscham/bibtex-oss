@@ -81,8 +81,8 @@ function createIdentifier(url, year) {
     return transformedParts.join('') + year;
 }
 
-app.get('/api/doi/:doi', async (req, res) => {
-    const doi = req.params.doi;
+app.get('/api/doi/*', async (req, res) => {
+    const doi = req.params[0];
     const url = `https://doi.org/${doi}`;
 
     try {
@@ -148,6 +148,8 @@ app.get('/', (req, res) => {
 });
 
 const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
+}
+
+module.exports = app;
