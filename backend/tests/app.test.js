@@ -245,7 +245,7 @@ describe('/api/isbn/:isbn', () => {
             .get(`/api/isbn/${validIsbn}`)
             .expect(200);
 
-        expect(response.text).toContain('@book{Doe2021');
+        expect(response.text).toContain('@book{Doe_2021');
     });
 
     it('returns a 200 status and a bibtex format for a valid ISBN with little info', async () => {
@@ -294,6 +294,123 @@ describe('/api/isbn/:isbn', () => {
     });
 });
 
+describe('GET /api/arxiv/:arxivId', () => {
+    afterEach(() => {
+        nock.cleanAll();
+    });
+
+    test('should return a successful response with the correct BibTeX format for a valid arxivId', async () => {
+        const arxivId = '1234.5678';
+        const mockResponse = `
+            <feed>
+                <entry>
+                    <title>Test Title</title>
+                    <author><name>John Doe</name></author>
+                    <published>2023-01-01T00:00:00Z</published>
+                </entry>
+            </feed>
+        `;
+
+        nock('https://export.arxiv.org')
+            .get(`/api/query?id_list=${arxivId}`)
+            .reply(200, mockResponse);
+
+        const response = await request(app).get(`/api/arxiv/${arxivId}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.text).toContain('@article');
+        expect(response.text).toContain('Test Title');
+        expect(response.text).toContain('John Doe');
+        expect(response.text).toContain('2023');
+    });
+
+    test('should return a successful response with the correct BibTeX format for a valid arxivId with little info', async () => {
+        const arxivId = '1234.5678';
+        const mockResponse = `
+            <feed>
+                <entry>
+                    <title>Test Title</title>
+                    <author><name>ö</name></author>
+                </entry>
+            </feed>
+        `;
+
+        nock('https://export.arxiv.org')
+            .get(`/api/query?id_list=${arxivId}`)
+            .reply(200, mockResponse);
+
+        const response = await request(app).get(`/api/arxiv/${arxivId}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.text).toContain('unknown');
+        expect(response.text).toContain('@article');
+        expect(response.text).toContain('Test Title');
+    });
+
+    test('should return a successful response with the correct BibTeX format for a valid arxivId with only a title', async () => {
+        const arxivId = '1234.5678';
+        const mockResponse = `
+            <feed>
+                <entry>
+                    <title>Test Title</title>
+                </entry>
+            </feed>
+        `;
+
+        nock('https://export.arxiv.org')
+            .get(`/api/query?id_list=${arxivId}`)
+            .reply(200, mockResponse);
+
+        const response = await request(app).get(`/api/arxiv/${arxivId}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.text).toContain('unknown');
+        expect(response.text).toContain('@article');
+        expect(response.text).toContain('Test Title');
+    });
+
+    test('should return an error when there is no valid info', async () => {
+        const arxivId = '1234.5678';
+        const mockResponse = `
+            <feed>
+                <entry>
+                </entry>
+            </feed>
+        `;
+
+        nock('https://export.arxiv.org')
+            .get(`/api/query?id_list=${arxivId}`)
+            .reply(200, mockResponse);
+
+        const response = await request(app).get(`/api/arxiv/${arxivId}`);
+
+        expect(response.statusCode).toBe(500);
+    });
+
+    test('should return an error when the arXiv ID is not found', async () => {
+        const arxivId = 'nonexistent';
+        nock('https://export.arxiv.org')
+            .get(`/api/query?id_list=${arxivId}`)
+            .reply(200, '<feed></feed>'); // Simulating an empty response
+
+        const response = await request(app).get(`/api/arxiv/${arxivId}`);
+
+        expect(response.statusCode).toBe(500);
+        expect(response.text).toContain('arXiv ID not found');
+    });
+
+    test('should handle failures when the arXiv API request fails', async () => {
+        const arxivId = 'errorCase';
+        nock('https://export.arxiv.org')
+            .get(`/api/query?id_list=${arxivId}`)
+            .replyWithError('Something went wrong');
+
+        const response = await request(app).get(`/api/arxiv/${arxivId}`);
+
+        expect(response.statusCode).toBe(500);
+    });
+});
+
 describe('POST /api/tidy', () => {
     it('should tidy a BibTeX entry', async () => {
         const bibtexInput = `@article{steward03,
@@ -334,5 +451,20 @@ describe('/ endpoint', () => {
             .expect(200);
 
         expect(response.text).toContain('I\'m alive!');
+    });
+});
+
+describe('POST /api/clean', () => {
+    it('should tidy a BibTeX entry', async () => {
+        const input = "äÄçÇéÉêSchmandöÖÐþúÚ";
+
+        const response = await request(app)
+            .post('/api/clean')
+            .set('Content-Type', 'text/plain')
+            .send(input)
+            .expect('Content-Type', /text/)
+            .expect(200);
+
+        expect(response.text).toBe("Schmand");
     });
 });

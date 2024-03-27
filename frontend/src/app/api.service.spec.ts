@@ -62,6 +62,19 @@ describe('ApiService', () => {
     req.flush(mockResponse);
   });
 
+  it('should fetch BibTex by arXiv', () => {
+    const mockResponse = 'Mocked response text';
+    const arxivId = '0123.2345';
+
+    service.getBibTexByArxiv(arxivId).subscribe((response) => {
+      expect(response.body).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`/api/arxiv/${encodeURIComponent(arxivId)}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
+  });
+
   it('should tidy a BibTex string', () => {
     const mockResponse = 'Tidied BibTex';
     const bibtex = 'Original BibTex';

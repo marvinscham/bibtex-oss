@@ -19,18 +19,13 @@ describe('HomeComponent', () => {
 
   beforeEach(async () => {
     // Mock ApiService and MatSnackBar
-    apiServiceMock = jasmine.createSpyObj('ApiService', [
-      'getBibTexByIsbn',
-      'getBibTexByDoi',
-      'getBibTexByUrl',
-      'tidyBibtex',
-    ]);
     snackBarMock = jasmine.createSpyObj('MatSnackBar', ['open']);
     apiServiceMock = jasmine.createSpyObj('ApiService', [
       'tidyBibtex',
       'getBibTexByUrl',
       'getBibTexByIsbn',
       'getBibTexByDoi',
+      'getBibTexByArxiv',
     ]);
 
     await TestBed.configureTestingModule({
@@ -208,6 +203,57 @@ describe('HomeComponent', () => {
     expect(component.output).toEqual('');
   }));
 
+  it('should notify to enter something if arXiv is empty', () => {
+    spyOn(component, 'notify');
+    component.loadBibtexFromArxiv('');
+    expect(component.notify).toHaveBeenCalledWith(
+      'Enter something first!',
+      'ok'
+    );
+  });
+
+  it('should update output on successful getBibTexByArxiv', fakeAsync(() => {
+    const mockResponse = { body: 'BibTex from arXiv' };
+    apiServiceMock.getBibTexByArxiv.and.returnValue(of(mockResponse));
+
+    component.loadBibtexFromArxiv('1234.5678');
+    tick();
+
+    expect(component.output).toEqual('BibTex from arXiv');
+  }));
+
+  it('should update output on successful getBibTexByArxiv with identifier marker', fakeAsync(() => {
+    const mockResponse = { body: 'BibTex from arXiv' };
+    apiServiceMock.getBibTexByArxiv.and.returnValue(of(mockResponse));
+
+    component.loadBibtexFromArxiv('arxiv:1234.5678');
+    tick();
+
+    expect(component.output).toEqual('BibTex from arXiv');
+  }));
+
+  it('should notify and log error on failed getBibTexByArxiv', fakeAsync(() => {
+    const mockError = new Error('Error fetching BibTex');
+    apiServiceMock.getBibTexByArxiv.and.returnValue(
+      throwError(() => mockError)
+    );
+    spyOn(component, 'notify');
+    spyOn(console, 'error');
+
+    component.loadBibtexFromArxiv('ööö');
+    tick();
+
+    expect(component.notify).toHaveBeenCalledWith(
+      'Failed to collect data from arXiv, sorry!',
+      'Ok :('
+    );
+    expect(console.error).toHaveBeenCalledWith(
+      'Request failed with error:',
+      mockError
+    );
+    expect(component.output).toEqual('');
+  }));
+
   it('should notify to enter something if DOI is empty', () => {
     spyOn(component, 'notify');
     component.loadBibtexFromDoi('');
@@ -264,6 +310,15 @@ describe('HomeComponent', () => {
     component.handleInput('auto', '1234567890');
     component.handleInput('auto', '123456789X');
     expect(component.loadBibtexFromIsbn).toHaveBeenCalledTimes(3);
+    expect(component.output).toEqual('Loading...');
+  });
+
+  it('should detect arXiv and set loading message for auto type', () => {
+    spyOn(component, 'loadBibtexFromArxiv');
+    component.handleInput('auto', 'arxiv:1234.5678');
+    component.handleInput('auto', 'arXiv:1234.5678');
+    component.handleInput('auto', 'ARXIV:1234.5678');
+    expect(component.loadBibtexFromArxiv).toHaveBeenCalledTimes(3);
     expect(component.output).toEqual('Loading...');
   });
 
