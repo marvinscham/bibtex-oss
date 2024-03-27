@@ -268,6 +268,25 @@ describe('/api/isbn/:isbn', () => {
         expect(response.text).toContain('@book{Doe,');
     });
 
+    it('returns a 200 status and a bibtex format for a valid ISBN with no author', async () => {
+        const validIsbn = "1234567890000";
+        const mockIsbnResponse = {
+            [`ISBN:${validIsbn}`]: {
+                title: 'Test Book Title'
+            }
+        };
+
+        nock('https://openlibrary.org')
+            .get(`/api/books?bibkeys=ISBN:${validIsbn}&format=json&jscmd=data`)
+            .reply(200, mockIsbnResponse);
+
+        const response = await request(app)
+            .get(`/api/isbn/${validIsbn}`)
+            .expect(200);
+
+        expect(response.text).toContain('@book{unknown,');
+    });
+
     it('returns an error message for an ISBN not found', async () => {
         const response = await request(app).get('/api/isbn/invalidISBN');
         expect(response.statusCode).toBe(500);
