@@ -41,11 +41,14 @@ export class HomeComponent {
         input.startsWith('https://dx.doi.org/') ||
         input.startsWith('dx.doi.org/') ||
         input.startsWith('https://doi.org/') ||
-        input.startsWith('doi.org/')
+        input.startsWith('doi.org/') ||
+        input.startsWith('10.')
       ) {
         type = 'doi';
       } else if (input.startsWith('https://') || input.startsWith('http://')) {
         type = 'url';
+      } else if (input.toLowerCase().startsWith('arxiv:')) {
+        type = 'arxiv';
       } else {
         type = 'doi';
       }
@@ -65,6 +68,10 @@ export class HomeComponent {
         this.loadBibtexFromUrl(input);
         break;
       }
+      case 'arxiv': {
+        this.loadBibtexFromArxiv(input);
+        break;
+      }
     }
 
     plausible('Lookup', { props: { type: type } });
@@ -79,11 +86,34 @@ export class HomeComponent {
     return regexISBN10.test(sanitizedInput) || regexISBN13.test(sanitizedInput);
   }
 
+  loadBibtexFromArxiv(arxivId: string) {
+    if (arxivId.toLowerCase().startsWith('arxiv:')) {
+      arxivId = arxivId.slice(6);
+    }
+
+    if (!arxivId) {
+      this.notify('Enter something first!', 'ok');
+      return;
+    }
+
+    this.apiService.getBibTexByArxiv(arxivId).subscribe({
+      next: (response: { body: string }) => {
+        this.output = response.body;
+      },
+      error: (error: any) => {
+        this.notify('Failed to collect data from arXiv, sorry!', 'Ok :(');
+        console.error('Request failed with error:', error);
+        this.output = '';
+      },
+    });
+  }
+
   loadBibtexFromIsbn(isbn: string) {
     isbn = isbn.replace(/[-\s]/g, '');
 
     if (!isbn) {
       this.notify('Enter something first!', 'ok');
+      return;
     }
 
     this.apiService.getBibTexByIsbn(isbn).subscribe({
@@ -101,6 +131,7 @@ export class HomeComponent {
   loadBibtexFromDoi(doi: string) {
     if (!doi) {
       this.notify('Enter something first!', 'ok');
+      return;
     }
     doi = doi.replace('https://dx.doi.org/', '');
     doi = doi.replace('dx.doi.org/', '');
@@ -122,6 +153,7 @@ export class HomeComponent {
   loadBibtexFromUrl(uri: string) {
     if (!uri) {
       this.notify('Enter something first!', 'ok');
+      return;
     }
 
     this.apiService.getBibTexByUrl(uri).subscribe({
@@ -139,6 +171,7 @@ export class HomeComponent {
   tidyOutput(bibtex: string) {
     if (!bibtex) {
       this.notify('Enter something first!', 'ok');
+      return;
     }
 
     this.apiService.tidyBibtex(bibtex).subscribe({
@@ -154,16 +187,14 @@ export class HomeComponent {
     });
   }
 
-  copyTextToClipboard(text: string) {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        this.notify('Copied to clipboard!');
-      })
-      .catch((err) => {
-        this.notify("Couldn't copy to clipboard.");
-        console.error('Could not copy text: ', err);
-      });
+  async copyTextToClipboard(text: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(text);
+      this.notify('Copied to clipboard!');
+    } catch (err) {
+      this.notify("Couldn't copy to clipboard.");
+      console.error('Could not copy text: ', err);
+    }
   }
 
   notify(message: string, buttonText: string = 'Close') {

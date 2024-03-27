@@ -1,5 +1,6 @@
 const express = require('express');
 const axios = require('axios');
+const xml2js = require('xml2js');
 const cheerio = require('cheerio');
 const tidy = require('bibtex-tidy');
 
@@ -18,6 +19,15 @@ function bibtexTidy(bibtex) {
         removeEmptyFields: true,
         enclosingBraces: ["title"]
     });
+}
+
+/**
+ * Removes all non-ASCII characters from a string
+ * @param {string} input Input string, e.g. "Grün"
+ * @return Output string, e.g. "Grn"
+ */
+function cleanString(input) {
+    return input.replace(/\W/g, '');
 }
 
 app.get('/api/url/:url', async (req, res) => {
@@ -54,7 +64,7 @@ app.get('/api/url/:url', async (req, res) => {
             $('head title').text() ||
             '';
 
-        let identifier = createIdentifier(url, year);
+        let identifier = createURLIdentifier(url, year);
 
         const bibtex = `
         @online{${identifier},
@@ -73,16 +83,20 @@ app.get('/api/url/:url', async (req, res) => {
     }
 });
 
-function createIdentifier(url, year) {
+function createURLIdentifier(url, year) {
+    let output;
     const parts = (new URL(url)).hostname.split('.');
+
     const transformedParts = parts.map((part, index) => {
-        return part.charAt(0).toUpperCase() + part.slice(1);
+        output = part.charAt(0).toUpperCase() + part.slice(1);
     });
-    return transformedParts.join('') + year;
+    output = transformedParts.join('') + year;
+
+    return cleanString(output);
 }
 
-app.get('/api/doi/:doi', async (req, res) => {
-    const doi = req.params.doi;
+app.get('/api/doi/*', async (req, res) => {
+    const doi = req.params[0];
     const url = `https://doi.org/${doi}`;
 
     try {
@@ -111,18 +125,24 @@ app.get('/api/isbn/:isbn', async (req, res) => {
             throw new Error("ISBN not found");
         }
 
-        let authors = "";
+        let authors = "unknown";
+        let firstAuthorLastName = "unknown";
         if (data.authors && data.authors[0] && data.authors[0].name) {
             authors = data.authors.map(author => author.name).join(" and ");
+            firstAuthorLastName = data.authors[0].name.split(" ").pop();
         }
         const title = data.title;
-        const firstAuthorLastName = data.authors[0].name.split(" ").pop();
         const year = data.publish_date ? data.publish_date : '';
         const publisher = data.publishers ? data.publishers[0].name : '';
         const address = data.publish_places ? data.publish_places[0].name : '';
 
+        let identifier = firstAuthorLastName
+        identifier += year != "" ? "_" : "";
+        identifier += year;
+        identifier = cleanString(identifier);
+
         const bibtex = `
-    @book{${firstAuthorLastName}${year},
+    @book{${identifier},
         title     = "${title}",
         author    = "${authors}",
         publisher = "${publisher}",
@@ -139,8 +159,53 @@ app.get('/api/isbn/:isbn', async (req, res) => {
     }
 });
 
+app.get('/api/arxiv/:arxivId', async (req, res) => {
+    const arxivId = req.params.arxivId;
+    const url = `https://export.arxiv.org/api/query?id_list=${arxivId}`;
+
+    try {
+        const response = await axios.get(url);
+        const parser = new xml2js.Parser();
+
+        const parsedData = await parser.parseStringPromise(response.data);
+        const entry = parsedData.feed?.entry?.[0];
+        if (!entry || (!entry.title?.[0] && !entry.author?.[0])) {
+            throw new Error("arXiv ID not found");
+        }
+
+        const title = entry.title?.[0].trim();
+        const authors = entry.author?.map(author => author.name?.[0]).join(" and ");
+        const year = entry.published?.[0].substring(0, 4) ?? "";
+
+        let identifier = entry.author?.[0].name?.[0].split(" ").pop() ?? "";
+        identifier += (identifier == "" && year == "") ? "" : "_";
+        identifier += year;
+        identifier = cleanString(identifier);
+        identifier = (identifier == "" || identifier == "_") ? "unknown" : identifier;
+
+        const bibtex = `
+@article{${identifier},
+    title = "${title}",
+    author = "${authors}",
+    year = "${year}",
+    eprint = "arXiv:${arxivId}",
+    url = "https://arxiv.org/abs/${arxivId}"
+}
+            `;
+
+        res.send(bibtexTidy(bibtex)["bibtex"]);
+    } catch (error) {
+        console.error("Error fetching arXiv data:", error);
+        res.status(500).send(error.toString());
+    }
+});
+
 app.post('/api/tidy', (req, res) => {
     res.send(bibtexTidy(req.body)["bibtex"]);
+});
+
+app.post('/api/clean', (req, res) => {
+    res.send(cleanString(req.body));
 });
 
 app.get('/', (req, res) => {
@@ -148,6 +213,8 @@ app.get('/', (req, res) => {
 });
 
 const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
+}
+
+module.exports = app;
