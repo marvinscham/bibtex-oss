@@ -26,6 +26,11 @@ export class ApiService {
     return this.http.get(url, { observe: 'response', responseType: 'text' });
   }
 
+  getBibTexByArxiv(arxivId: string): Observable<HttpResponse<any>> {
+    const url = `${this.BASE_URL}/arxiv/${encodeURIComponent(arxivId)}`;
+    return this.http.get(url, { observe: 'response', responseType: 'text' });
+  }
+
   tidyBibtex(bibtex: string): Observable<HttpResponse<any>> {
     const url = `${this.BASE_URL}/tidy`;
     return this.http.post(url, bibtex, {

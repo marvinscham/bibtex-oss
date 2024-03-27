@@ -47,6 +47,8 @@ export class HomeComponent {
         type = 'doi';
       } else if (input.startsWith('https://') || input.startsWith('http://')) {
         type = 'url';
+      } else if (input.toLowerCase().startsWith('arxiv:')) {
+        type = 'arxiv';
       } else {
         type = 'doi';
       }
@@ -66,6 +68,10 @@ export class HomeComponent {
         this.loadBibtexFromUrl(input);
         break;
       }
+      case 'arxiv': {
+        this.loadBibtexFromArxiv(input);
+        break;
+      }
     }
 
     plausible('Lookup', { props: { type: type } });
@@ -78,6 +84,28 @@ export class HomeComponent {
     const regexISBN13 = /^(?:978|979)\d{10}$/;
 
     return regexISBN10.test(sanitizedInput) || regexISBN13.test(sanitizedInput);
+  }
+
+  loadBibtexFromArxiv(arxivId: string) {
+    if (arxivId.toLowerCase().startsWith('arxiv:')) {
+      arxivId = arxivId.slice(6);
+    }
+
+    if (!arxivId) {
+      this.notify('Enter something first!', 'ok');
+      return;
+    }
+
+    this.apiService.getBibTexByArxiv(arxivId).subscribe({
+      next: (response: { body: string }) => {
+        this.output = response.body;
+      },
+      error: (error: any) => {
+        this.notify('Failed to collect data from arXiv, sorry!', 'Ok :(');
+        console.error('Request failed with error:', error);
+        this.output = '';
+      },
+    });
   }
 
   loadBibtexFromIsbn(isbn: string) {
