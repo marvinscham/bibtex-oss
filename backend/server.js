@@ -27,7 +27,7 @@ function bibtexTidy(bibtex) {
  * @return Output string, e.g. "Grn"
  */
 function cleanString(input) {
-    return input.replace(/[^\x20-\x7E]/g, '');
+    return input.replace(/\W/g, '');
 }
 
 app.get('/api/url/:url', async (req, res) => {
