@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.3 2024-03-26
+
+### Dev
+
+- Repackaged backend into separate directory
+- Added tests
+
+### Fixed
+
+- The API will no longer be called when submitting empty input
+- Requests against ISBNs that don't return author info will no longer fail
+
 ## v0.2.2 2024-03-25
 
 ### Dev

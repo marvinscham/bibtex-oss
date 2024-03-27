@@ -82,8 +82,8 @@ function createIdentifier(url, year) {
     return transformedParts.join('') + year;
 }
 
-app.get('/api/doi/:doi', async (req, res) => {
-    const doi = req.params.doi;
+app.get('/api/doi/*', async (req, res) => {
+    const doi = req.params[0];
     const url = `https://doi.org/${doi}`;
 
     try {
@@ -112,12 +112,13 @@ app.get('/api/isbn/:isbn', async (req, res) => {
             throw new Error("ISBN not found");
         }
 
-        let authors = "";
+        let authors = "unknown";
+        let firstAuthorLastName = "unknown";
         if (data.authors && data.authors[0] && data.authors[0].name) {
             authors = data.authors.map(author => author.name).join(" and ");
+            firstAuthorLastName = data.authors[0].name.split(" ").pop();
         }
         const title = data.title;
-        const firstAuthorLastName = data.authors[0].name.split(" ").pop();
         const year = data.publish_date ? data.publish_date : '';
         const publisher = data.publishers ? data.publishers[0].name : '';
         const address = data.publish_places ? data.publish_places[0].name : '';
@@ -192,6 +193,8 @@ app.get('/', (req, res) => {
 });
 
 const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
+}
+
+module.exports = app;

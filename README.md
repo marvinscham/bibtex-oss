@@ -2,6 +2,9 @@
 
 # BibTeX OSS
 
+[![Quality Gate Status](https://sonar.ms-ds.org/api/project_badges/measure?project=bibtex-oss&metric=alert_status&token=sqb_5c6be929d17e22972fa331f89389cd32f7990382)](https://sonar.ms-ds.org/dashboard?id=bibtex-oss)
+[![Coverage](https://sonar.ms-ds.org/api/project_badges/measure?project=bibtex-oss&metric=coverage&token=sqb_5c6be929d17e22972fa331f89389cd32f7990382)](https://sonar.ms-ds.org/dashboard?id=bibtex-oss)
+
 <img width="75" src="./frontend/src/favicon.ico">
 
 A one-stop-shop to generate BibTeX from DOI, ISBN and URLs.
@@ -39,7 +42,7 @@ services:
 services:
   backend:
     container_name: bibtex-oss_backend
-    build: .
+    build: backend
     environment:
       NODE_ENV: production
 
@@ -55,8 +58,9 @@ services:
 Install:
 
 ```bash
+cd backend
 npm install
-cd frontend
+cd ../frontend
 npm install -g @angular/cli
 npm install
 ```
@@ -64,6 +68,7 @@ npm install
 Run backend:
 
 ```bash
+cd backend
 npm run start
 ```
 
