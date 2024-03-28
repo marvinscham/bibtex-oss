@@ -7,7 +7,7 @@
 
 <img width="75" src="./frontend/src/favicon.ico">
 
-A one-stop-shop to generate BibTeX from DOI, ISBN and URLs.
+A one-stop-shop to generate BibTeX from DOI, ISBN, arXiv and URLs.
 
 [bibtex.ms-ds.org](https://bibtex.ms-ds.org)
 

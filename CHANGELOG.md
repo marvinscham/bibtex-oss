@@ -1,5 +1,17 @@
 # Changelog
 
+This project's changelog structure is based on [keep a changelog](https://keepachangelog.com/), extended by explicit `Dev` sections to highlight changes not impacting user interactions. The versioning strategy is based on [SemVer](https://semver.org/).
+
+## v0.3.0 2024-03-28
+
+### Added
+
+- arXiv support, either auto-detected with `arxiv:` prefix or manually specified
+
+### Dev
+
+- Added tests for frontend and backend to CI
+
 ## v0.2.3 2024-03-26
 
 ### Dev
