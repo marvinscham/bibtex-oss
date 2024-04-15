@@ -2,6 +2,12 @@
 
 This project's changelog structure is based on [keep a changelog](https://keepachangelog.com/), extended by explicit `Dev` sections to highlight changes not impacting user interactions. The versioning strategy is based on [SemVer](https://semver.org/).
 
+## v0.3.1 2024-04-15
+
+### Dev
+
+- Dependency updates
+
 ## v0.3.0 2024-03-28
 
 ### Added
