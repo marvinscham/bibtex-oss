@@ -35,7 +35,7 @@
     "@angular/compiler-cli": "^17.3.4",
     "@types/express": "^4.17.17",
     "@types/jasmine": "~5.1.0",
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.12.8",
     "@types/prismjs": "^1.26.3",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
