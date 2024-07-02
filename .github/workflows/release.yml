@@ -24,7 +24,7 @@ jobs:
           echo "::set-output name=release_tag::$RELEASE_TAG"
 
       - name: Build and push backend Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: '{{defaultContext}}:backend'
           push: true
@@ -33,7 +33,7 @@ jobs:
             ghcr.io/${{ github.repository }}_backend:${{ steps.version_data.outputs.release_tag }}
 
       - name: Build and push frontend Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: '{{defaultContext}}:frontend'
           push: true

@@ -1,6 +1,6 @@
 {
   "name": "bibtex-oss-backend",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "A one-stop-shop for generating BibTeX references.",
   "main": "index.js",
   "private": true,
@@ -21,7 +21,7 @@
   "author": "Marvin Scham",
   "license": "GPL-3.0-only",
   "dependencies": {
-    "axios": "^1.6.8",
+    "axios": "^1.7.2",
     "bibtex-tidy": "^1.13.0",
     "cheerio": "^1.0.0-rc.12",
     "express": "^4.19.2",
