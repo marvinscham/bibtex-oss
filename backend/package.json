@@ -23,7 +23,7 @@
   "dependencies": {
     "axios": "^1.7.2",
     "bibtex-tidy": "^1.13.0",
-    "cheerio": "^1.0.0-rc.12",
+    "cheerio": "^1.0.0",
     "express": "^4.19.2",
     "xml2js": "^0.6.2"
   },
