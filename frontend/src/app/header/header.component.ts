@@ -6,17 +6,16 @@ import { NgOptimizedImage } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [
-    MatToolbar,
-    MatIcon,
-    MatButton,
-    MatAnchor,
-    NgOptimizedImage,
-    RouterModule,
-  ],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.scss',
+    selector: 'app-header',
+    imports: [
+        MatToolbar,
+        MatIcon,
+        MatButton,
+        MatAnchor,
+        NgOptimizedImage,
+        RouterModule,
+    ],
+    templateUrl: './header.component.html',
+    styleUrl: './header.component.scss'
 })
 export class HeaderComponent {}

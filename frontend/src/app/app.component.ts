@@ -5,9 +5,8 @@ import { FooterComponent } from './footer/footer.component';
 import { AppRoutingModule } from './app.routes';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  standalone: true,
-  imports: [HeaderComponent, HomeComponent, FooterComponent, AppRoutingModule],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    imports: [HeaderComponent, HomeComponent, FooterComponent, AppRoutingModule]
 })
 export class AppComponent {}

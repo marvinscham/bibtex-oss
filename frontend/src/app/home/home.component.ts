@@ -11,20 +11,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatOption,
-    MatSelect,
-    FormsModule,
-    MatIcon,
-    MatTooltipModule,
-  ],
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatOption,
+        MatSelect,
+        FormsModule,
+        MatIcon,
+        MatTooltipModule,
+    ]
 })
 export class HomeComponent {
   output = '';

@@ -7,18 +7,17 @@ import { RouterModule } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
-  selector: 'app-footer',
-  standalone: true,
-  imports: [
-    MatToolbar,
-    MatIcon,
-    NgOptimizedImage,
-    MatButton,
-    MatAnchor,
-    RouterModule,
-    MatDividerModule,
-  ],
-  templateUrl: './footer.component.html',
-  styleUrl: './footer.component.scss',
+    selector: 'app-footer',
+    imports: [
+        MatToolbar,
+        MatIcon,
+        NgOptimizedImage,
+        MatButton,
+        MatAnchor,
+        RouterModule,
+        MatDividerModule,
+    ],
+    templateUrl: './footer.component.html',
+    styleUrl: './footer.component.scss'
 })
 export class FooterComponent {}
