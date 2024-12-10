@@ -1,9 +1,15 @@
 version: 2
+
 updates:
   - package-ecosystem: 'npm'
     directory: 'backend'
     schedule:
       interval: 'weekly'
+    groups:
+      backend-updates:
+        patterns:
+          - '*'
+
   - package-ecosystem: 'npm'
     directory: 'frontend'
     schedule:
@@ -12,7 +18,17 @@ updates:
       angular:
         patterns:
           - '@angular*'
+      non-angular:
+        patterns:
+          - '*'
+        exclude-patterns:
+          - '@angular*'
+
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       interval: 'weekly'
+    groups:
+      actions:
+        patterns:
+          - '*'
